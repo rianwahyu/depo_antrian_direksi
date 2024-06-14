@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="depo_antrian_direksi">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>Depo Antrian Direksi</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js"></script>
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCCIj_3SVGpc_Y5mprQ7w66lORpRD4kmAA",
+      authDomain: "depo-bangunan-ced0b.firebaseapp.com",
+      databaseURL: "https://depo-bangunan-ced0b-default-rtdb.firebaseio.com",
+      projectId: "depo-bangunan-ced0b",
+      storageBucket: "depo-bangunan-ced0b.appspot.com",
+      messagingSenderId: "309644002856",
+      appId: "1:309644002856:web:bf9c0f4628ea8f107d971d",
+      measurementId: "G-Y1KH72FLPS"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    // Request permission and get token
+    function requestPermission() {
+      messaging.requestPermission().then(function () {
+        console.log('Notification permission granted.');
+        return messaging.getToken();
+      }).then(function (token) {
+        console.log('Token:', token);
+        // You can save this token to your server to send notifications from server-side
+      }).catch(function (err) {
+        console.error('Unable to get permission to notify.', err);
+      });
+    }
+
+    // Handle foreground messages
+    messaging.onMessage((payload) => {
+      console.log('Message received. ', payload);
+      // Customize notification here
+      const notificationTitle = payload.notification.title;
+      const notificationOptions = {
+        body: payload.notification.body,
+      };
+
+      new Notification(notificationTitle, notificationOptions);
+    });
+
+    // Request permission on load
+    window.onload = function () {
+      requestPermission();
+    };
+  </script>
+
+  <script src="flutter_bootstrap.js" async></script>
+  <!-- <script src="main.dart.js" type="application/javascript"></script> -->
+  <!-- <script>
+    navigator.serviceWorker.register('flutter.js');
+  </script> -->
+
+</body>
+
+</html>

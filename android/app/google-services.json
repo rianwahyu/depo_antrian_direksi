@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1026822250548",
+    "project_id": "antriandireksi",
+    "storage_bucket": "antriandireksi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026822250548:android:5b4e1a2d080b980278aa61",
+        "android_client_info": {
+          "package_name": "com.depo.apps.antri"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsjX9GFFNCTRQmQyQUvQ45wc203UhB3-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
