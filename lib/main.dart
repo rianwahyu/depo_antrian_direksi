@@ -10,6 +10,7 @@ import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.d
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/pages/dashboard_page.dart';
 import 'package:depo_antrian_direksi/presentation/tes_home_page.dart';
 import 'package:depo_antrian_direksi/presentation/tes_message_page.dart';
@@ -25,7 +26,9 @@ final navigatorKey = GlobalKey<NavigatorState>();
 // function to lisen to background changes
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {  
-  print("Handling a background message: ${message.messageId}");
+  if (kDebugMode) {
+    print("Handling a background message: ${message.messageId}");
+  }
 }
 
 // to handle notification on foreground on web platform
@@ -54,16 +57,19 @@ Future <void> main() async {
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     if (message.notification != null) {
-      print("Background Notification Tapped");
+      if (kDebugMode) {
+        print("Background Notification Tapped");
+      }
       // navigatorKey.currentState!.pushNamed("/message", arguments: message);
     }
   });
 
-  PushNotifications.init();
+  /* PushNotifications.init();
   // only initialize if platform is not web
   if (!kIsWeb) {
     PushNotifications.localNotiInit();
-  }
+  } */
+ 
   // Listen to background notifications
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -98,6 +104,9 @@ Future <void> main() async {
   runApp(const MyApp());
 }
 
+
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -117,6 +126,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => DataAntrianBloc(AntrianDataSource()),
         ),
+        BlocProvider(
+          create: (context) => StatusAntrianBloc(AntrianDataSource()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -126,13 +138,13 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        routes: {
-          '/': (context) =>  LoginPage(),
-          '/message': (context) =>  TesMessagePage()
-        },
+        // routes: {
+        //   '/': (context) =>  LoginPage(),
+        //   '/message': (context) =>  TesMessagePage()
+        // },
         //home: const TesHomePage(),
 
-        /* home: FutureBuilder(
+        home: FutureBuilder(
           future: AuthLocalDataSource().isUserLogedIn(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -148,7 +160,7 @@ class MyApp extends StatelessWidget {
               return const LoginPage();
             }
           },
-        ), */
+        ),
       ),
     );
   }

@@ -5,9 +5,13 @@ import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dar
 import 'package:depo_antrian_direksi/presentation/dashboard/pages/dashboard_page.dart';
 import 'package:depo_antrian_direksi/presentation/widget/date_mask_formatter.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'dart:html' as html;
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,10 +34,64 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _firebaseMessaging.getToken().then((token) {
-      print("Token FCM: $token");
-      // Gunakan token sesuai kebutuhan Anda (misalnya, kirimkan ke server Anda)
-    });
+    _requestPermission();
+  }
+
+  checkPushPermission() async {
+    var pushPermission = await html.window.navigator.permissions!.query({"name": "push"});
+    print('push permission: ${pushPermission.state}');
+}
+
+  Future<void> _requestPermission() async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      if (kDebugMode) {
+        print('User granted permission');
+      }
+      _firebaseMessaging.getToken().then((token) {
+        if (kDebugMode) {
+          print("Token FCM: $token");
+        }
+        // Gunakan token sesuai kebutuhan Anda (misalnya, kirimkan ke server Anda)
+      });
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      if (kDebugMode) {
+        print('User granted provisional permission');
+      }
+    } else {
+      if (kDebugMode) {
+        print('User declined or has not accepted permission');
+      }
+      _showPermissionDeniedDialog();
+    }
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Notification Permission Denied'),
+        content: const Text('Please enable notifications in your browser settings.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -179,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ); */
 
-              Nav.replace(context, DashboardPage());
+              Nav.replace(context, const DashboardPage());
             },
             error: (message) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -228,6 +286,8 @@ class _LoginPageState extends State<LoginPage> {
                         tglLahirEdt.text,
                       ),
                     );
+                    //_requestPermission();
+                    //checkPushPermission();
               },
               child: const Text('Login'),
             );

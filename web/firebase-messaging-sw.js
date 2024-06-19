@@ -1,7 +1,6 @@
 importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js");
 
-
 firebase.initializeApp({
   apiKey: "AIzaSyCCIj_3SVGpc_Y5mprQ7w66lORpRD4kmAA",
   authDomain: "depo-bangunan-ced0b.firebaseapp.com",
@@ -16,21 +15,17 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 
-messaging.onBackgroundMessage((message) => {
-  console.log("onBackgroundMessage", message);
-});
-
-// messaging.onBackgroundMessage(function(payload) {  
-//   console.log('Message received Background. ', payload);
-
-//   // Customize notification here
-//   const notificationTitle = payload.notification.title;
-//   const notificationOptions = {
-//     body: payload.notification.body,
-//   };
-
-//   self.registration.showNotification(notificationTitle,
-//     notificationOptions);
+// messaging.onBackgroundMessage((message) => {
+//   console.log("onBackgroundMessage", message);
 // });
 
+messaging.onBackgroundMessage((payload) => {
+  console.log('Received background message ', payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '/firebase-logo.png'
+  };
 
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});

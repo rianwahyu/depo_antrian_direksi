@@ -12,9 +12,9 @@ class AntrianDataSource {
   Future<Either<String, String>> createAntrian(
     String nik,
     String keperluan,
-  ) async {    
+  ) async {
     await AuthLocalDataSource().getAuthData();
-    
+
     Map<String, dynamic> data = {
       'nik': nik,
       'keperluan': keperluan,
@@ -36,13 +36,11 @@ class AntrianDataSource {
     if (response.statusCode == 201) {
       return const Right('Berhasil membuat Antrian');
     } else {
-      return  const Left('Gagal Login');
+      return const Left('Gagal Login');
     }
-
-    
   }
 
-   Future<Either<String, AntrianDataResponseModel>> getAntrian() async {
+  Future<Either<String, AntrianDataResponseModel>> getAntrian() async {
     //final authData = await AuthLocalDataSource().getAuthData();
     final url = Uri.parse('${AppConstant.baseUrl}/antrian_read');
     final response = await http.get(
@@ -59,6 +57,65 @@ class AntrianDataSource {
     } else {
       DMethod.log(response.body);
       return const Left('Gagal mendapatkan data antrian');
+    }
+  }
+
+  Future<Either<String, String>> cekStatusAntrian() async {
+    final url = Uri.parse('${AppConstant.baseUrl}/antrian_state');
+    // ignore: unused_local_variable
+    final response = await http.get(
+      url,
+    );
+
+    // if (response.statusCode == 201) {
+    //   DMethod.log(response.body);
+    //   return const Right('Aktif');
+    // } else {
+    //   DMethod.log(response.body);
+    //   return const Left('Off');
+    // }
+
+    DMethod.log(response.body);
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body); // Decode JSON
+      final message = responseBody['message']; // Ambil nilai 'message'
+      return Right(message); // Return 'message' jika status 200
+    } else {
+      return const Left('Off'); // Return 'message' jika status bukan 200
+    }
+  }
+
+  Future<Either<String, String>> updateStatusAntrian(
+    bool isSwitched,
+    String changeBy,
+  ) async {
+    await AuthLocalDataSource().getAuthData();
+
+    Map<String, dynamic> data = {
+      'changeBy': changeBy,
+      'statusAntrian': (isSwitched ? 'AKTIF' : 'OFF'),
+    };
+
+    // Encode the data to JSON
+    String jsonBody = json.encode(data);
+
+    final url = Uri.parse('${AppConstant.baseUrl}/antrian_state_update');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody,
+    );
+     
+    if (response.statusCode == 201) {
+      final responseBody = json.decode(response.body); // Decode JSON
+      final message = responseBody['message']; // Ambil nilai 'message'
+
+      return Right(message); // Return 'message' jika status 201
+    } else {
+      return const Left('Off'); // Return 'message' jika status bukan 201
     }
   }
 }
