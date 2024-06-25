@@ -2,18 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>309644002856-p6mijd5mq8ndqhaublcceo1auh8p45bv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.309644002856-p6mijd5mq8ndqhaublcceo1auh8p45bv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>309644002856-jaise2rc6or4k7fu2ek4joqdhe85v48k.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCkuokIr12Hn_EOz12LsCPckqvpcFOlABw</string>
+	<string>AIzaSyBvREOgvCEtPAcHhZjvZOZkSAwZCmaQ3A4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1026822250548</string>
+	<string>309644002856</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.depo.apps.antriandireksi</string>
 	<key>PROJECT_ID</key>
-	<string>antriandireksi</string>
+	<string>depo-bangunan-ced0b</string>
 	<key>STORAGE_BUCKET</key>
-	<string>antriandireksi.appspot.com</string>
+	<string>depo-bangunan-ced0b.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1026822250548:ios:d7929a42fccda9f878aa61</string>
+	<string>1:309644002856:ios:9f71d85452afeb8a7d971d</string>
+	<key>DATABASE_URL</key>
+	<string>https://depo-bangunan-ced0b-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

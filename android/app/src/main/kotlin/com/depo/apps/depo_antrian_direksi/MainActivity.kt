@@ -1,4 +1,4 @@
-package com.depo.apps.depo_antrian_direksi
+package com.depo.apps.antriandireksi
 
 import io.flutter.embedding.android.FlutterActivity
 

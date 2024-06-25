@@ -8,6 +8,7 @@ import 'package:depo_antrian_direksi/firebase_options.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/counter_time_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
@@ -92,14 +93,14 @@ Future <void> main() async {
   });
 
   // for handling in terminated state
-  final RemoteMessage? message =
+  /* final RemoteMessage? message =
       await FirebaseMessaging.instance.getInitialMessage();
 
   if (message != null) {
     Future.delayed(const Duration(seconds: 1), () {
       //navigatorKey.currentState!.pushNamed("/message", arguments: message);
     });
-  }
+  } */
 
   runApp(const MyApp());
 }
@@ -129,6 +130,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => StatusAntrianBloc(AntrianDataSource()),
         ),
+        // BlocProvider(
+        //   create: (context) => CounterTimeBloc(),
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

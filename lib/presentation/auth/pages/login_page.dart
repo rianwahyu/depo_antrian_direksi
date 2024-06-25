@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'dart:html' as html;
+
 
 
 class LoginPage extends StatefulWidget {
@@ -37,10 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     _requestPermission();
   }
 
-  checkPushPermission() async {
-    var pushPermission = await html.window.navigator.permissions!.query({"name": "push"});
-    print('push permission: ${pushPermission.state}');
-}
+  
 
   Future<void> _requestPermission() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:d_method/d_method.dart';
@@ -7,14 +8,19 @@ import 'package:depo_antrian_direksi/config/app_format.dart';
 import 'package:depo_antrian_direksi/config/fcm_services.dart';
 import 'package:depo_antrian_direksi/config/nav.dart';
 import 'package:depo_antrian_direksi/data/datasource/auth_local_datasource.dart';
+import 'package:depo_antrian_direksi/data/models/response/antrian_data_response_model.dart';
 import 'package:depo_antrian_direksi/data/models/response/auth_response_model.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/counter_time_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/widget/antrian_direksi_item_widget.dart';
+import 'package:depo_antrian_direksi/presentation/widget/button_opsi_antrian_widget.dart';
+import 'package:depo_antrian_direksi/presentation/widget/status_antrian_item_widget.dart';
+import 'package:depo_antrian_direksi/presentation/widget/wrap_data_cell_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -29,6 +35,10 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  static const int durasiPenghitungMundur = 60;
+  late int detikTersisa;
+  late Timer timer;
+
   String? nik;
   String? jabatan;
 
@@ -38,6 +48,38 @@ class _DashboardPageState extends State<DashboardPage> {
     _isSwitched = value;
     print('staus Antrian : $value ');
     _showStatusAntrian(context, _isSwitched);
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  void mulaiPenghitungMundur() {
+    //context.read<CounterTimeBloc>().add(CounterTimeEvent.start(60));
+
+    BlocProvider.of<CounterTimeBloc>(context).add(CounterTimeEvent.start(60));
+
+
+    // setState(() {
+    //   detikTersisa = durasiPenghitungMundur;
+    // });
+    // timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    //   setState(() {
+    //     if (detikTersisa > 0) {
+    //       detikTersisa--;
+    //     } else {
+    //       timer.cancel();
+    //     }
+    //   });
+    // });
+  }
+
+  String formatDurasi(int detik) {
+    final menit = detik ~/ 60;
+    final detikTersisa = detik % 60;
+    return '$menit:${detikTersisa.toString().padLeft(2, '0')}';
   }
 
   void _showStatusAntrian(BuildContext context, bool isSwitched) {
@@ -54,7 +96,7 @@ class _DashboardPageState extends State<DashboardPage> {
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           content: Text(
-              "Apakah anda inign ${isSwitched ? 'mengaktifkan' : 'menonatktifkan'} status Antrian ?"),
+              "Apakah anda ingin ${isSwitched ? 'mengaktifkan' : 'menonatktifkan'} status Antrian ?"),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -115,6 +157,8 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
+    
+    //mulaiPenghitungMundur();
 
     refreshContent();
 
@@ -386,6 +430,59 @@ class _DashboardPageState extends State<DashboardPage> {
                         (orientation == Orientation.portrait)
                             ? _portraitHeader(context)
                             : _landscapeHeader(context),
+
+                        /* Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          child: Text(
+                            formatDurasi(detikTersisa),
+                            style: TextStyle(fontSize: 48),
+                          ),
+                        ), */
+
+                        Container(
+                          /* child: BlocBuilder<CounterTimeBloc, CounterTimeState>(
+                            builder: (context, state) {
+                              return state.maybeWhen(
+                                orElse: () {
+                                  return Text('data');
+                                },
+                                running: (duration) {
+                                  return Text(
+                                    '${duration ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
+                                    style: TextStyle(fontSize: 48),
+                                  );
+                                },
+                                finished: () {
+                                  return Text(
+                                    'Time\'s up!',
+                                    style: TextStyle(fontSize: 48),
+                                  );
+                                },
+                              );
+                              /* return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  if (state is )
+                                    Text(
+                                      'Press Start to begin countdown.',
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                  if (state is CounterTimeState.running)
+                                    Text(
+                                      '${state.duration ~/ 60}:${(state.duration % 60).toString().padLeft(2, '0')}',
+                                      style: TextStyle(fontSize: 48),
+                                    ),
+                                  if (state is CounterTimeState.finished)
+                                    Text(
+                                      'Time\'s up!',
+                                      style: TextStyle(fontSize: 48),
+                                    ),
+                                ],
+                              ); */
+                            },
+                          ), */
+                        ),
                         BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
                           builder: (context, state) {
                             if (kDebugMode) {
@@ -468,22 +565,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 child: CircularProgressIndicator(),
                               );
                             }, loaded: (antrian) {
-                              return ListView.builder(
-                                padding: const EdgeInsets.only(top: 8),
-                                shrinkWrap: true,
-                                itemCount: antrian.length,
-                                itemBuilder: (context, index) {
-                                  final item = antrian[index];
-
-                                  return AntrianDireksiItem(
-                                    nama: item.namaKaryawan!,
-                                    jabatan: item.jabatan!,
-                                    noAntrian: item.noAntrian!,
-                                    status: item.statusAntrian!,
-                                    jam: item.waktuAntrian!,
-                                  );
-                                },
-                              );
+                              if (jabatan!.contains("SEKRETARIAT")) {
+                                return AdminSekreatriat(context, antrian);
+                              } else {
+                                return DataAntrianUserOnly(antrian);
+                              }
                             });
                           },
                         ),
@@ -721,13 +807,197 @@ class _DashboardPageState extends State<DashboardPage> {
     ); */
   }
 
+  Container DataAntrianUserOnly(List<AntrianDireksi> antrian) {
+    return Container(
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 8),
+        shrinkWrap: true,
+        itemCount: antrian.length,
+        itemBuilder: (context, index) {
+          final item = antrian[index];
+
+          return AntrianDireksiItem(
+            nama: item.namaKaryawan!,
+            jabatan: item.jabatan!,
+            noAntrian: item.noAntrian!,
+            status: item.statusAntrian!,
+            jam: item.waktuAntrian!,
+          );
+        },
+      ),
+    );
+  }
+
+  Container AdminSekreatriat(
+      BuildContext context, List<AntrianDireksi> antrian) {
+    return Container(
+      padding: EdgeInsets.only(left: 10, right: 10),
+      margin: EdgeInsets.only(left: 10, right: 10, top: 16),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        //border: Border.all(color: AppColors.grey),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Builder(builder: (context) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width,
+              ),
+              child: DataTable(
+                dividerThickness: 1,
+                dataRowMaxHeight: 60,
+
+                //showBottomBorder: true,
+                headingTextStyle:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                headingRowColor:
+                    WidgetStateProperty.resolveWith((states) => Colors.black),
+                columns: [
+                  DataColumn(
+                      label: Container(
+                    width: 100,
+                    child: titleTableHead("No Antrian"),
+                  )),
+                  DataColumn(label: titleTableHead("Nama Karyawan")),
+                  DataColumn(label: titleTableHead("Jabatan")),
+                  DataColumn(label: titleTableHead("Keperluan")),
+                  DataColumn(label: titleTableHead("Waktu Antri")),
+                  DataColumn(label: titleTableHead("Status")),
+                  DataColumn(label: titleTableHead("Opsi")),
+                ],
+                rows: antrian.isEmpty
+                    ? [
+                        const DataRow(
+                          cells: [
+                            DataCell(
+                              Row(
+                                children: [
+                                  Icon(Icons.highlight_off),
+                                ],
+                              ),
+                            ),
+                            DataCell.empty,
+                            DataCell.empty,
+                            DataCell.empty,
+                            DataCell.empty,
+                            DataCell.empty,
+                            DataCell.empty,
+                          ],
+                        ),
+                      ]
+                    : antrian
+                        .map(
+                          (atr) => DataRow(
+                            cells: [
+                              DataCell(
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.green,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      atr.noAntrian ?? '0',
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                      textScaler: const TextScaler.linear(
+                                        1.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              DataCell(WrappedDataCell(atr.namaKaryawan ?? '')),
+                              DataCell(WrappedDataCell(atr.jabatan ?? '')),
+                              DataCell(WrappedDataCell(atr.keperluan ?? '')),
+                              DataCell(
+                                Text(
+                                  atr.waktuAntrian ?? '',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                              DataCell(SizedBox(
+                                width: 80,
+                                child: StatusAntrianItemWidget(
+                                    statusAntrian: atr.statusAntrian ?? ''),
+                              )),
+                              DataCell(
+                                Row(
+                                  children: [
+                                    ButtonOpsiAntrianWidget(
+                                      colors: AppColors.orange,
+                                      keys: 'Panggil',
+                                      onPressed: () {},
+                                    ),
+                                    ButtonOpsiAntrianWidget(
+                                      colors: AppColors.blue,
+                                      keys: 'Dilayani',
+                                      onPressed: () {},
+                                    ),
+                                    ButtonOpsiAntrianWidget(
+                                      colors: AppColors.darkGreen,
+                                      keys: 'Selesai',
+                                      onPressed: () {},
+                                    ),
+                                    ButtonOpsiAntrianWidget(
+                                      colors: AppColors.red,
+                                      keys: 'Batal',
+                                      onPressed: () {},
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Padding titleTableHead(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+
   Widget _portraitHeader(BuildContext context) {
     return Column(
       children: [
         _dataUserContainer(context),
-        (jabatan!.contains("SEKRETARIAT"))
-            ? _statusAntrianContainer(context)
-            : const SizedBox(),
+        FutureBuilder(
+          future: AuthLocalDataSource().getAuthData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.hasData &&
+                snapshot.data!.user!.jabatan!.contains('SEKRETARIAT')) {
+              return _statusAntrianContainer(context);
+            } else {
+              return const SizedBox();
+            }
+          },
+        ),
       ],
     );
   }

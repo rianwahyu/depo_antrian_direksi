@@ -46,38 +46,36 @@ class DefaultFirebaseOptions {
     }
   }
 
-  /* static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCzvu1Hp20K26pDvMtl-oNAD33HaQ9wWCk',
-    appId: '1:1026822250548:web:8d4ead40ecbd781f78aa61',
-    messagingSenderId: '1026822250548',
-    projectId: 'antriandireksi',
-    authDomain: 'antriandireksi.firebaseapp.com',
-    storageBucket: 'antriandireksi.appspot.com',
-  ); */
-
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCCIj_3SVGpc_Y5mprQ7w66lORpRD4kmAA',
     appId: '1:309644002856:web:bf9c0f4628ea8f107d971d',
     messagingSenderId: '309644002856',
     projectId: 'depo-bangunan-ced0b',
     authDomain: 'depo-bangunan-ced0b.firebaseapp.com',
+    databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
     storageBucket: 'depo-bangunan-ced0b.appspot.com',
+    measurementId: 'G-Y1KH72FLPS',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDsjX9GFFNCTRQmQyQUvQ45wc203UhB3-k',
-    appId: '1:1026822250548:android:5b4e1a2d080b980278aa61',
-    messagingSenderId: '1026822250548',
-    projectId: 'antriandireksi',
-    storageBucket: 'antriandireksi.appspot.com',
+    apiKey: 'AIzaSyDuyDoZgQyeeuxf7g5S1yfpkymfg_twlkQ',
+    appId: '1:309644002856:android:767659483bc588077d971d',
+    messagingSenderId: '309644002856',
+    projectId: 'depo-bangunan-ced0b',
+    databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
+    storageBucket: 'depo-bangunan-ced0b.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCkuokIr12Hn_EOz12LsCPckqvpcFOlABw',
-    appId: '1:1026822250548:ios:d7929a42fccda9f878aa61',
-    messagingSenderId: '1026822250548',
-    projectId: 'antriandireksi',
-    storageBucket: 'antriandireksi.appspot.com',
+    apiKey: 'AIzaSyBvREOgvCEtPAcHhZjvZOZkSAwZCmaQ3A4',
+    appId: '1:309644002856:ios:9f71d85452afeb8a7d971d',
+    messagingSenderId: '309644002856',
+    projectId: 'depo-bangunan-ced0b',
+    databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
+    storageBucket: 'depo-bangunan-ced0b.appspot.com',
+    androidClientId: '309644002856-jaise2rc6or4k7fu2ek4joqdhe85v48k.apps.googleusercontent.com',
+    iosClientId: '309644002856-p6mijd5mq8ndqhaublcceo1auh8p45bv.apps.googleusercontent.com',
     iosBundleId: 'com.depo.apps.antriandireksi',
   );
+
 }
