@@ -11,8 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
-
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -35,6 +33,10 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement initState
     super.initState();
     _requestPermission();
+
+    _firebaseMessaging.getAPNSToken().then((String? token) {
+    print("APNS Token: $token");
+  });
   }
 
   
@@ -69,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
       if (kDebugMode) {
         print('User declined or has not accepted permission');
       }
-      _showPermissionDeniedDialog();
+      //_showPermissionDeniedDialog();
     }
   }
 

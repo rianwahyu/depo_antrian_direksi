@@ -13,6 +13,7 @@ import 'package:depo_antrian_direksi/data/models/response/auth_response_model.da
 import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/call_antrian/call_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/counter_time_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
@@ -35,10 +36,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  static const int durasiPenghitungMundur = 60;
-  late int detikTersisa;
-  late Timer timer;
-
   String? nik;
   String? jabatan;
 
@@ -52,28 +49,11 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void dispose() {
-    timer.cancel();
     super.dispose();
   }
 
-  void mulaiPenghitungMundur() {
-    //context.read<CounterTimeBloc>().add(CounterTimeEvent.start(60));
-
-    BlocProvider.of<CounterTimeBloc>(context).add(CounterTimeEvent.start(60));
-
-
-    // setState(() {
-    //   detikTersisa = durasiPenghitungMundur;
-    // });
-    // timer = Timer.periodic(Duration(seconds: 1), (timer) {
-    //   setState(() {
-    //     if (detikTersisa > 0) {
-    //       detikTersisa--;
-    //     } else {
-    //       timer.cancel();
-    //     }
-    //   });
-    // });
+  Future<void> mulaiPenghitungMundur() async {
+    context.read<CounterTimeBloc>().add(CounterTimeEvent.start(60));
   }
 
   String formatDurasi(int detik) {
@@ -157,8 +137,6 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    
-    //mulaiPenghitungMundur();
 
     refreshContent();
 
@@ -172,17 +150,19 @@ class _DashboardPageState extends State<DashboardPage> {
       String typeAntrian = decodedData['type'];
       if (typeAntrian == "refreshAntrian") {
         getStatusAntrian();
+      } else if (typeAntrian == "countDownTimerAntrian") {
+        mulaiPenghitungMundur();
       }
 
       getDataAntrian();
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        print("Background Notification Tapped");
-        // navigatorKey.currentState!.pushNamed("/message", arguments: message);
-      }
-    });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     print("Background Notification Tapped");
+    //     // navigatorKey.currentState!.pushNamed("/message", arguments: message);
+    //   }
+    // });
   }
 
   void refreshContent() {
@@ -430,99 +410,19 @@ class _DashboardPageState extends State<DashboardPage> {
                         (orientation == Orientation.portrait)
                             ? _portraitHeader(context)
                             : _landscapeHeader(context),
-
-                        /* Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          child: Text(
-                            formatDurasi(detikTersisa),
-                            style: TextStyle(fontSize: 48),
-                          ),
-                        ), */
-
-                        Container(
-                          /* child: BlocBuilder<CounterTimeBloc, CounterTimeState>(
-                            builder: (context, state) {
-                              return state.maybeWhen(
-                                orElse: () {
-                                  return Text('data');
-                                },
-                                running: (duration) {
-                                  return Text(
-                                    '${duration ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
-                                    style: TextStyle(fontSize: 48),
-                                  );
-                                },
-                                finished: () {
-                                  return Text(
-                                    'Time\'s up!',
-                                    style: TextStyle(fontSize: 48),
-                                  );
-                                },
-                              );
-                              /* return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  if (state is )
-                                    Text(
-                                      'Press Start to begin countdown.',
-                                      style: TextStyle(fontSize: 24),
-                                    ),
-                                  if (state is CounterTimeState.running)
-                                    Text(
-                                      '${state.duration ~/ 60}:${(state.duration % 60).toString().padLeft(2, '0')}',
-                                      style: TextStyle(fontSize: 48),
-                                    ),
-                                  if (state is CounterTimeState.finished)
-                                    Text(
-                                      'Time\'s up!',
-                                      style: TextStyle(fontSize: 48),
-                                    ),
-                                ],
-                              ); */
-                            },
-                          ), */
-                        ),
-                        BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
+                        BlocBuilder<CounterTimeBloc, CounterTimeState>(
                           builder: (context, state) {
-                            if (kDebugMode) {
-                              print(state);
-                            }
-
                             return state.maybeWhen(
                               orElse: () {
-                                return const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Status Antrian '),
-                                    Text(
-                                      'OFF',
-                                      style: TextStyle(
-                                          color: AppColors.darkRed,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                );
+                                return SizedBox();
                               },
-                              switchToggled: (isSwitched) {
-                                return const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Status Antrian '),
-                                    Text(
-                                      'Aktif',
-                                      style: TextStyle(
-                                          color: AppColors.darkGreen,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                );
+                              running: (duration) {
+                                return countTimerWidget();
                               },
                             );
                           },
                         ),
+                        statusAntrianWidget(),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 16, right: 16, top: 16),
@@ -543,33 +443,29 @@ class _DashboardPageState extends State<DashboardPage> {
                         BlocBuilder<DataAntrianBloc, DataAntrianState>(
                           builder: (context, state) {
                             return state.maybeWhen(orElse: () {
-                              return Center(
-                                child: Column(
-                                  children: [
-                                    const SizedBox(height: 24),
-                                    Image.asset(
-                                      AppAssets.empty_folder,
-                                      width: 80,
-                                      height: 80,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    const Text('Data Antrian Kosong',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
-                                  ],
-                                ),
-                              );
+                              return notFoundAntrian();
                             }, loading: () {
                               return const Center(
                                 child: CircularProgressIndicator(),
                               );
                             }, loaded: (antrian) {
-                              if (jabatan!.contains("SEKRETARIAT")) {
-                                return AdminSekreatriat(context, antrian);
-                              } else {
-                                return DataAntrianUserOnly(antrian);
-                              }
+                              return FutureBuilder(
+                                future: AuthLocalDataSource().getAuthData(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  if (snapshot.hasData &&
+                                      snapshot.data!.user!.jabatan!
+                                          .contains('SEKRETARIAT')) {
+                                    return AdminSekreatriat(context, antrian);
+                                  } else
+                                    return DataAntrianUserOnly(antrian);
+                                },
+                              );
                             });
                           },
                         ),
@@ -584,227 +480,136 @@ class _DashboardPageState extends State<DashboardPage> {
         },
       ),
     );
-    /* return Scaffold(
-      backgroundColor: AppColors.lightWhite,
-      bottomNavigationBar: _buttonAmbilAntrian(context),
-      body: CustomScrollView(
-        slivers: [
-          buildAppBar(context),
-           SliverToBoxAdapter(
-            child: OrientationBuilder(
-              builder: (context, orientation) {
-                return Container(
-                  color: Colors.blue,
-                  height: orientation == Orientation.portrait ? 200.0 : 100.0,
-                  child: Center(
-                    child: Text(
-                      orientation == Orientation.portrait
-                          ? 'Portrait Mode'
-                          : 'Landscape Mode',
-                      style: const TextStyle(color: Colors.white, fontSize: 24),
-                    ),
+  }
+
+  Center notFoundAntrian() {
+    return Center(
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          Image.asset(
+            AppAssets.empty_folder,
+            width: 80,
+            height: 80,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Data Antrian Kosong',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container statusAntrianWidget() {
+    return Container(
+      child: BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
+        builder: (context, state) {
+          if (kDebugMode) {
+            print(state);
+          }
+
+          return state.maybeWhen(
+            orElse: () {
+              return const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Status Antrian '),
+                  Text(
+                    'OFF',
+                    style: TextStyle(
+                        color: AppColors.darkRed,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
+                ],
+              );
+            },
+            switchToggled: (isSwitched) {
+              return const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Status Antrian '),
+                  Text(
+                    'Aktif',
+                    style: TextStyle(
+                        color: AppColors.darkGreen,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Center countTimerWidget() {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        margin: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: 16,
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Anda Dipanggil Direksi',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            Text('Silahkan datang dalam waktu berikut'),
+            SizedBox(
+              height: 8,
+            ),
+            BlocBuilder<CounterTimeBloc, CounterTimeState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  orElse: () {
+                    return Text('-');
+                  },
+                  running: (duration) {
+                    return Text(
+                      '${duration ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
+                      style: TextStyle(fontSize: 48),
+                    );
+                  },
+                  finished: () {
+                    return Text(
+                      'Waktu Habis',
+                      style: TextStyle(fontSize: 48),
+                    );
+                  },
                 );
               },
             ),
-          ),
-          /* SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    AppFormat.greetingMessage(),
-                    textScaler: const TextScaler.linear(1.0),
-                  ),
-                ),
-
-                OrientationBuilder(
-              builder: (context, orientation) {
-                return Container(
-                  color: Colors.blue,
-                  height: orientation == Orientation.portrait ? 200.0 : 100.0,
-                  child: Center(
-                    child: Text(
-                      orientation == Orientation.portrait
-                          ? 'Portrait Mode'
-                          : 'Landscape Mode',
-                      style: const TextStyle(color: Colors.white, fontSize: 24),
-                    ),
-                  ),
-                );
-              }),
-                (jabatan!.contains("SEKRETARIAT"))
-                    ? OrientationBuilder(
-                        builder: (context, orientation) {
-                          return Container(
-                              child: orientation == Orientation.portrait
-                                  ? Text('Port')
-                                  : _landscape(context));
-                        },
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        margin: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 5,
-                          bottom: 16,
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: FutureBuilder(
-                            future: AuthLocalDataSource().getAuthData(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              if (snapshot.hasData) {
-                                return Column(
-                                  children: [
-                                    dataLogin('Nik',
-                                        snapshot.data!.user!.nik.toString()),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    dataLogin('Nama',
-                                        snapshot.data!.user!.nama.toString()),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    dataLogin(
-                                        'Jabatan',
-                                        snapshot.data!.user!.jabatan
-                                            .toString()),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return const Text('Tidak ada data');
-                              }
-                            }),
-                      ),
-                BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
-                  builder: (context, state) {
-                    return state.maybeWhen(
-                      orElse: () {
-                        return const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Status Antrian '),
-                            Text(
-                              'OFF',
-                              style: TextStyle(
-                                  color: AppColors.darkRed,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        );
-                      },
-                      loaded: (message) {
-                        return const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Status Antrian '),
-                            Text(
-                              'Aktif',
-                              style: TextStyle(
-                                  color: AppColors.darkGreen,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'List Antrian',
-                        textScaler: TextScaler.linear(1.0),
-                      ),
-                      Text(
-                        AppFormat.fullDate(AppFormat.getCurrentDate()),
-                        textScaler: const TextScaler.linear(1.0),
-                      ),
-                    ],
-                  ),
-                ),
-                BlocBuilder<DataAntrianBloc, DataAntrianState>(
-                  builder: (context, state) {
-                    return state.maybeWhen(orElse: () {
-                      return Center(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 24),
-                            Image.asset(
-                              AppAssets.empty_folder,
-                              width: 80,
-                              height: 80,
-                            ),
-                            const SizedBox(height: 16),
-                            const Text('Data Antrian Kosong',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                )),
-                          ],
-                        ),
-                      );
-                    }, loading: () {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }, loaded: (antrian) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(top: 8),
-                        shrinkWrap: true,
-                        itemCount: antrian.length,
-                        itemBuilder: (context, index) {
-                          final item = antrian[index];
-
-                          return AntrianDireksiItem(
-                            nama: item.namaKaryawan!,
-                            jabatan: item.jabatan!,
-                            noAntrian: item.noAntrian!,
-                            status: item.statusAntrian!,
-                            jam: item.waktuAntrian!,
-                          );
-                        },
-                      );
-                    });
-                  },
-                ),
-              ],
-            ),
-          ) */
-        ],
+          ],
+        ),
       ),
-    ); */
+    );
   }
 
   Container DataAntrianUserOnly(List<AntrianDireksi> antrian) {
@@ -933,11 +738,59 @@ class _DashboardPageState extends State<DashboardPage> {
                               DataCell(
                                 Row(
                                   children: [
-                                    ButtonOpsiAntrianWidget(
+                                    BlocConsumer<CallAntrianBloc,
+                                        CallAntrianState>(
+                                      listener: (context, state) {
+                                        state.maybeWhen(
+                                            // success: (data) {
+                                            //   ScaffoldMessenger.of(context).showSnackBar(
+                                            //     SnackBar(
+                                            //       content: Text(data),
+                                            //       backgroundColor: Colors.green,
+                                            //     ),
+                                            //   );
+                                            //   Navigator.of(context).pop();
+                                            //   getDataAntrian();
+                                            // },
+                                            // error: (message) {
+                                            //   ScaffoldMessenger.of(context).showSnackBar(
+                                            //     SnackBar(
+                                            //       content: Text(message),
+                                            //       backgroundColor: Colors.red,
+                                            //     ),
+                                            //   );
+                                            // },
+                                            orElse: () {});
+                                      },
+                                      builder: (context, state) {
+                                        return state.maybeWhen(
+                                          orElse: () {
+                                            return ButtonOpsiAntrianWidget(
+                                              colors: AppColors.orange,
+                                              keys: 'Panggil',
+                                              onPressed: () {
+                                                context
+                                                    .read<CallAntrianBloc>()
+                                                    .add(CallAntrianEvent
+                                                        .callAntrian(
+                                                            atr.id.toString()));
+                                              },
+                                            );
+                                          },
+                                          loading: () {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                    /* ButtonOpsiAntrianWidget(
                                       colors: AppColors.orange,
                                       keys: 'Panggil',
                                       onPressed: () {},
-                                    ),
+                                    ), */
                                     ButtonOpsiAntrianWidget(
                                       colors: AppColors.blue,
                                       keys: 'Dilayani',
@@ -1122,8 +975,17 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _landscapeHeader(BuildContext context) {
-    return (jabatan!.contains("SEKRETARIAT"))
-        ? IntrinsicHeight(
+    return FutureBuilder(
+      future: AuthLocalDataSource().getAuthData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (snapshot.hasData &&
+            snapshot.data!.user!.jabatan!.contains('SEKRETARIAT')) {
+          return IntrinsicHeight(
             child: Row(
               children: [
                 Expanded(
@@ -1135,8 +997,11 @@ class _DashboardPageState extends State<DashboardPage> {
                 )
               ],
             ),
-          )
-        : _dataUserContainer(context);
+          );
+        } else
+          return _dataUserContainer(context);
+      },
+    );
   }
 
   Widget buildAppBar(BuildContext context) {
@@ -1181,100 +1046,86 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buttonAmbilAntrian(BuildContext context) {
-    return BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
-      builder: (context, state) {
-        return state.maybeWhen(
-          orElse: () {
-            return InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              onTap: null,
-              child: Container(
-                  padding: const EdgeInsets.only(bottom: 15, top: 10),
-                  decoration: const BoxDecoration(
-                    color: Colors.grey,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        offset: Offset(0, -1),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: const Text(
-                    'Ambil Antrian Tidak Tersedia',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
-            );
-          },
-          switchToggled: (isSwitched) {
-            _isSwitched =
-                isSwitched; // Update internal state based on Bloc state
-            return InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              onTap: () {
-                _showDialog(context);
-              },
-              child: Container(
-                  padding: const EdgeInsets.only(bottom: 15, top: 10),
-                  decoration: const BoxDecoration(
-                    color: Colors.blueAccent,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        offset: Offset(0, -1),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: const Text(
-                    'Ambil Antrian',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
-            );
-          },
-        );
+    return FutureBuilder(
+      future: AuthLocalDataSource().getAuthData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (snapshot.hasData &&
+            snapshot.data!.user!.jabatan!.contains('SEKRETARIAT')) {
+          return SizedBox();
+        } else
+          return BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
+            builder: (context, state) {
+              return state.maybeWhen(
+                orElse: () {
+                  return InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: null,
+                    child: Container(
+                        padding: const EdgeInsets.only(bottom: 15, top: 10),
+                        decoration: const BoxDecoration(
+                          color: Colors.grey,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0, -1),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Ambil Antrian Tidak Tersedia',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                        )),
+                  );
+                },
+                switchToggled: (isSwitched) {
+                  _isSwitched =
+                      isSwitched; // Update internal state based on Bloc state
+                  return InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      _showDialog(context);
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.only(bottom: 15, top: 10),
+                        decoration: const BoxDecoration(
+                          color: Colors.blueAccent,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0, -1),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Ambil Antrian',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                        )),
+                  );
+                },
+              );
+            },
+          );
       },
     );
-    /* return InkWell(
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onTap: () {
-        _showDialog(context);
-      },
-      child: Container(
-          padding: const EdgeInsets.only(bottom: 15, top: 10),
-          decoration: const BoxDecoration(
-            color: Colors.blueAccent,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                offset: Offset(0, -1),
-                blurRadius: 10,
-              ),
-            ],
-          ),
-          child: const Text(
-            'Ambil Antrian',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-            ),
-            textAlign: TextAlign.center,
-          )),
-    ); */
   }
 
   Row dataLogin(String label, String value) {

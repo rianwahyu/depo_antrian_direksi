@@ -20,37 +20,43 @@ mixin _$CounterTimeEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(int duration) start,
+    required TResult Function(int duration) tick,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(int duration)? start,
+    TResult? Function(int duration)? tick,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(int duration)? start,
+    TResult Function(int duration)? tick,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
-    required TResult Function(StartTimer value) start,
+    required TResult Function(_StartTimer value) start,
+    required TResult Function(_Tick value) tick,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
-    TResult? Function(StartTimer value)? start,
+    TResult? Function(_StartTimer value)? start,
+    TResult? Function(_Tick value)? tick,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
-    TResult Function(StartTimer value)? start,
+    TResult Function(_StartTimer value)? start,
+    TResult Function(_Tick value)? tick,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -114,6 +120,7 @@ class _$StartedImpl implements _Started {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(int duration) start,
+    required TResult Function(int duration) tick,
   }) {
     return started();
   }
@@ -123,6 +130,7 @@ class _$StartedImpl implements _Started {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(int duration)? start,
+    TResult? Function(int duration)? tick,
   }) {
     return started?.call();
   }
@@ -132,6 +140,7 @@ class _$StartedImpl implements _Started {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(int duration)? start,
+    TResult Function(int duration)? tick,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -144,7 +153,8 @@ class _$StartedImpl implements _Started {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
-    required TResult Function(StartTimer value) start,
+    required TResult Function(_StartTimer value) start,
+    required TResult Function(_Tick value) tick,
   }) {
     return started(this);
   }
@@ -153,7 +163,8 @@ class _$StartedImpl implements _Started {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
-    TResult? Function(StartTimer value)? start,
+    TResult? Function(_StartTimer value)? start,
+    TResult? Function(_Tick value)? tick,
   }) {
     return started?.call(this);
   }
@@ -162,7 +173,8 @@ class _$StartedImpl implements _Started {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
-    TResult Function(StartTimer value)? start,
+    TResult Function(_StartTimer value)? start,
+    TResult Function(_Tick value)? tick,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -209,7 +221,7 @@ class __$$StartTimerImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$StartTimerImpl implements StartTimer {
+class _$StartTimerImpl implements _StartTimer {
   const _$StartTimerImpl(this.duration);
 
   @override
@@ -243,6 +255,7 @@ class _$StartTimerImpl implements StartTimer {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(int duration) start,
+    required TResult Function(int duration) tick,
   }) {
     return start(duration);
   }
@@ -252,6 +265,7 @@ class _$StartTimerImpl implements StartTimer {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(int duration)? start,
+    TResult? Function(int duration)? tick,
   }) {
     return start?.call(duration);
   }
@@ -261,6 +275,7 @@ class _$StartTimerImpl implements StartTimer {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(int duration)? start,
+    TResult Function(int duration)? tick,
     required TResult orElse(),
   }) {
     if (start != null) {
@@ -273,7 +288,8 @@ class _$StartTimerImpl implements StartTimer {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
-    required TResult Function(StartTimer value) start,
+    required TResult Function(_StartTimer value) start,
+    required TResult Function(_Tick value) tick,
   }) {
     return start(this);
   }
@@ -282,7 +298,8 @@ class _$StartTimerImpl implements StartTimer {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
-    TResult? Function(StartTimer value)? start,
+    TResult? Function(_StartTimer value)? start,
+    TResult? Function(_Tick value)? tick,
   }) {
     return start?.call(this);
   }
@@ -291,7 +308,8 @@ class _$StartTimerImpl implements StartTimer {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
-    TResult Function(StartTimer value)? start,
+    TResult Function(_StartTimer value)? start,
+    TResult Function(_Tick value)? tick,
     required TResult orElse(),
   }) {
     if (start != null) {
@@ -301,12 +319,151 @@ class _$StartTimerImpl implements StartTimer {
   }
 }
 
-abstract class StartTimer implements CounterTimeEvent {
-  const factory StartTimer(final int duration) = _$StartTimerImpl;
+abstract class _StartTimer implements CounterTimeEvent {
+  const factory _StartTimer(final int duration) = _$StartTimerImpl;
 
   int get duration;
   @JsonKey(ignore: true)
   _$$StartTimerImplCopyWith<_$StartTimerImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$TickImplCopyWith<$Res> {
+  factory _$$TickImplCopyWith(
+          _$TickImpl value, $Res Function(_$TickImpl) then) =
+      __$$TickImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int duration});
+}
+
+/// @nodoc
+class __$$TickImplCopyWithImpl<$Res>
+    extends _$CounterTimeEventCopyWithImpl<$Res, _$TickImpl>
+    implements _$$TickImplCopyWith<$Res> {
+  __$$TickImplCopyWithImpl(_$TickImpl _value, $Res Function(_$TickImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? duration = null,
+  }) {
+    return _then(_$TickImpl(
+      null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$TickImpl implements _Tick {
+  const _$TickImpl(this.duration);
+
+  @override
+  final int duration;
+
+  @override
+  String toString() {
+    return 'CounterTimeEvent.tick(duration: $duration)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$TickImpl &&
+            (identical(other.duration, duration) ||
+                other.duration == duration));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, duration);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$TickImplCopyWith<_$TickImpl> get copyWith =>
+      __$$TickImplCopyWithImpl<_$TickImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() started,
+    required TResult Function(int duration) start,
+    required TResult Function(int duration) tick,
+  }) {
+    return tick(duration);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? started,
+    TResult? Function(int duration)? start,
+    TResult? Function(int duration)? tick,
+  }) {
+    return tick?.call(duration);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? started,
+    TResult Function(int duration)? start,
+    TResult Function(int duration)? tick,
+    required TResult orElse(),
+  }) {
+    if (tick != null) {
+      return tick(duration);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Started value) started,
+    required TResult Function(_StartTimer value) start,
+    required TResult Function(_Tick value) tick,
+  }) {
+    return tick(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Started value)? started,
+    TResult? Function(_StartTimer value)? start,
+    TResult? Function(_Tick value)? tick,
+  }) {
+    return tick?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Started value)? started,
+    TResult Function(_StartTimer value)? start,
+    TResult Function(_Tick value)? tick,
+    required TResult orElse(),
+  }) {
+    if (tick != null) {
+      return tick(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Tick implements CounterTimeEvent {
+  const factory _Tick(final int duration) = _$TickImpl;
+
+  int get duration;
+  @JsonKey(ignore: true)
+  _$$TickImplCopyWith<_$TickImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

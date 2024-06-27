@@ -48,13 +48,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCCIj_3SVGpc_Y5mprQ7w66lORpRD4kmAA',
-    appId: '1:309644002856:web:bf9c0f4628ea8f107d971d',
+    appId: '1:309644002856:web:0c00df66620f62267d971d',
     messagingSenderId: '309644002856',
     projectId: 'depo-bangunan-ced0b',
     authDomain: 'depo-bangunan-ced0b.firebaseapp.com',
     databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
     storageBucket: 'depo-bangunan-ced0b.appspot.com',
-    measurementId: 'G-Y1KH72FLPS',
+    measurementId: 'G-GQ3LH4LY6D',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

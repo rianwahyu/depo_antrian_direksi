@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:d_method/d_method.dart';
+import 'package:depo_antrian_direksi/config/notification_helper.dart';
 import 'package:depo_antrian_direksi/config/push_notification_service.dart';
 import 'package:depo_antrian_direksi/data/datasource/antrian_data_source.dart';
 import 'package:depo_antrian_direksi/data/datasource/auth_local_datasource.dart';
@@ -8,6 +10,7 @@ import 'package:depo_antrian_direksi/firebase_options.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/call_antrian/call_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/counter_time_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
@@ -21,15 +24,30 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 // function to lisen to background changes
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {  
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print("Handling a background message: ${message.messageId}");
   }
+
+  String payloadData = jsonEncode(message.data);
+  DMethod.log("Cek di Background $payloadData ");
+
+  Map<String, dynamic> decodedData = jsonDecode(payloadData);
+
+  // Ambil nilai dari kunci "antrian"
+  String typeAntrian = decodedData['type'];
+  // if (typeAntrian == "refreshAntrian") {
+  //   getStatusAntrian();
+  // } else if (typeAntrian == "countDownTimerAntrian") {
+  //   mulaiPenghitungMundur();
+  // }
+  //NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin);
 }
 
 // to handle notification on foreground on web platform
@@ -50,13 +68,18 @@ void showNotification({required String title, required String body}) {
   );
 }
 
-Future <void> main() async {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+
+  /* FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     if (message.notification != null) {
       if (kDebugMode) {
         print("Background Notification Tapped");
@@ -64,18 +87,28 @@ Future <void> main() async {
       // navigatorKey.currentState!.pushNamed("/message", arguments: message);
     }
   });
-
+ */
   /* PushNotifications.init();
   // only initialize if platform is not web
   if (!kIsWeb) {
     PushNotifications.localNotiInit();
   } */
- 
+
+  //Listen ForeGround Notifications
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
+  });
+
   // Listen to background notifications
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
 
   // to handle foreground notifications
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  /* FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     String payloadData = jsonEncode(message.data);
 
     if (message.notification != null) {
@@ -84,13 +117,13 @@ Future <void> main() async {
         //     title: message.notification!.title!,
         //     body: message.notification!.body!);
       } else {
-        PushNotifications.showSimpleNotification(
-            title: message.notification!.title!,
-            body: message.notification!.body!,
-            payload: payloadData);
+        // PushNotifications.showSimpleNotification(
+        //     title: message.notification!.title!,
+        //     body: message.notification!.body!,
+        //     payload: payloadData);
       }
     }
-  });
+  }); */
 
   // for handling in terminated state
   /* final RemoteMessage? message =
@@ -104,9 +137,6 @@ Future <void> main() async {
 
   runApp(const MyApp());
 }
-
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -130,9 +160,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => StatusAntrianBloc(AntrianDataSource()),
         ),
-        // BlocProvider(
-        //   create: (context) => CounterTimeBloc(),
-        // ),
+        BlocProvider(
+          create: (context) => CounterTimeBloc(),
+        ),
+        BlocProvider(
+          create: (context) => CallAntrianBloc(AntrianDataSource()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

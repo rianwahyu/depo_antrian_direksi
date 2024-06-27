@@ -67,14 +67,6 @@ class AntrianDataSource {
       url,
     );
 
-    // if (response.statusCode == 201) {
-    //   DMethod.log(response.body);
-    //   return const Right('Aktif');
-    // } else {
-    //   DMethod.log(response.body);
-    //   return const Left('Off');
-    // }
-
     DMethod.log(response.body);
 
     if (response.statusCode == 200) {
@@ -118,4 +110,37 @@ class AntrianDataSource {
       return const Left('Off'); // Return 'message' jika status bukan 201
     }
   }
+
+
+  Future<Either<String, String>> callAntrian(  
+    String id,
+  ) async {
+    await AuthLocalDataSource().getAuthData();
+
+    Map<String, dynamic> data = {
+      'id': id,      
+    };
+
+    // Encode the data to JSON
+    String jsonBody = json.encode(data);
+
+    final url = Uri.parse('${AppConstant.baseUrl}/call_antrian');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody,
+    );
+     
+    if (response.statusCode == 201) {
+      final responseBody = json.decode(response.body); // Decode JSON
+      final message = responseBody['message']; // Ambil nilai 'message'
+
+      return Right(message); // Return 'message' jika status 201
+    } else {
+      return const Left('Off'); // Return 'message' jika status bukan 201
+    }
+  }
+
 }
