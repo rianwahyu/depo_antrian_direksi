@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class ButtonOpsiAntrianWidget extends StatelessWidget {
   final String keys;
   final Color colors;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const ButtonOpsiAntrianWidget({
     super.key,
     required this.keys,
     required this.colors,
-    required this.onPressed,
+     this.onPressed,
   });
 
   @override

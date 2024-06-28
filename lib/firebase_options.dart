@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDuyDoZgQyeeuxf7g5S1yfpkymfg_twlkQ',
-    appId: '1:309644002856:android:767659483bc588077d971d',
+    appId: '1:309644002856:android:3c4d961e7addde647d971d',
     messagingSenderId: '309644002856',
     projectId: 'depo-bangunan-ced0b',
     databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
@@ -68,14 +68,14 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBvREOgvCEtPAcHhZjvZOZkSAwZCmaQ3A4',
-    appId: '1:309644002856:ios:9f71d85452afeb8a7d971d',
+    appId: '1:309644002856:ios:557b573e5b34c9107d971d',
     messagingSenderId: '309644002856',
     projectId: 'depo-bangunan-ced0b',
     databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
     storageBucket: 'depo-bangunan-ced0b.appspot.com',
     androidClientId: '309644002856-jaise2rc6or4k7fu2ek4joqdhe85v48k.apps.googleusercontent.com',
-    iosClientId: '309644002856-p6mijd5mq8ndqhaublcceo1auh8p45bv.apps.googleusercontent.com',
-    iosBundleId: 'com.depo.apps.antriandireksi',
+    iosClientId: '309644002856-16s7can193l21s7cd77uips4jui6473c.apps.googleusercontent.com',
+    iosBundleId: 'com.depo.apps.depoAntrianDireksi',
   );
 
 }

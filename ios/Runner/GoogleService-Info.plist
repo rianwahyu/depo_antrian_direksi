@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>309644002856-p6mijd5mq8ndqhaublcceo1auh8p45bv.apps.googleusercontent.com</string>
+	<string>309644002856-16s7can193l21s7cd77uips4jui6473c.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.309644002856-p6mijd5mq8ndqhaublcceo1auh8p45bv</string>
+	<string>com.googleusercontent.apps.309644002856-16s7can193l21s7cd77uips4jui6473c</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>309644002856-jaise2rc6or4k7fu2ek4joqdhe85v48k.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.depo.apps.antriandireksi</string>
+	<string>com.depo.apps.depoAntrianDireksi</string>
 	<key>PROJECT_ID</key>
 	<string>depo-bangunan-ced0b</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:309644002856:ios:9f71d85452afeb8a7d971d</string>
+	<string>1:309644002856:ios:557b573e5b34c9107d971d</string>
 	<key>DATABASE_URL</key>
 	<string>https://depo-bangunan-ced0b-default-rtdb.firebaseio.com</string>
 </dict>

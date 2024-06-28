@@ -114,6 +114,7 @@ class AntrianDataSource {
 
   Future<Either<String, String>> callAntrian(  
     String id,
+    
   ) async {
     await AuthLocalDataSource().getAuthData();
 
@@ -125,6 +126,41 @@ class AntrianDataSource {
     String jsonBody = json.encode(data);
 
     final url = Uri.parse('${AppConstant.baseUrl}/call_antrian');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonBody,
+    );
+     
+    if (response.statusCode == 201) {
+      final responseBody = json.decode(response.body); // Decode JSON
+      final message = responseBody['message']; // Ambil nilai 'message'
+
+      return Right(message); // Return 'message' jika status 201
+    } else {
+      return const Left('Off'); // Return 'message' jika status bukan 201
+    }
+  }
+
+  Future<Either<String, String>> updateAntrianByID(  
+    String id,
+    String changeBy,
+    String statusAntrian,
+  ) async {
+    await AuthLocalDataSource().getAuthData();
+
+    Map<String, dynamic> data = {
+      'id': id,      
+      'changeBy': changeBy,
+      'statusAntrian': statusAntrian,
+    };
+
+    // Encode the data to JSON
+    String jsonBody = json.encode(data);
+
+    final url = Uri.parse('${AppConstant.baseUrl}/antrian_update_status');
     final response = await http.post(
       url,
       headers: {

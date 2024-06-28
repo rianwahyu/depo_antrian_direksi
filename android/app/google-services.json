@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:309644002856:android:3c4d961e7addde647d971d",
+        "android_client_info": {
+          "package_name": "com.depo.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309644002856-lp829jor0s7j8gdb7riokt92b8jhg04p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuyDoZgQyeeuxf7g5S1yfpkymfg_twlkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309644002856-lp829jor0s7j8gdb7riokt92b8jhg04p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "309644002856-28abu0cb9aflvqbbkdfaa8po4pn61q9d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "fkdm.deproductions.co.id"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:309644002856:android:767659483bc588077d971d",
         "android_client_info": {
           "package_name": "com.depo.apps.antriandireksi"

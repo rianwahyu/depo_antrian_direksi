@@ -18,6 +18,7 @@ import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/co
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/update_antrian/update_status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/widget/antrian_direksi_item_widget.dart';
 import 'package:depo_antrian_direksi/presentation/widget/button_opsi_antrian_widget.dart';
 import 'package:depo_antrian_direksi/presentation/widget/status_antrian_item_widget.dart';
@@ -741,40 +742,29 @@ class _DashboardPageState extends State<DashboardPage> {
                                     BlocConsumer<CallAntrianBloc,
                                         CallAntrianState>(
                                       listener: (context, state) {
-                                        state.maybeWhen(
-                                            // success: (data) {
-                                            //   ScaffoldMessenger.of(context).showSnackBar(
-                                            //     SnackBar(
-                                            //       content: Text(data),
-                                            //       backgroundColor: Colors.green,
-                                            //     ),
-                                            //   );
-                                            //   Navigator.of(context).pop();
-                                            //   getDataAntrian();
-                                            // },
-                                            // error: (message) {
-                                            //   ScaffoldMessenger.of(context).showSnackBar(
-                                            //     SnackBar(
-                                            //       content: Text(message),
-                                            //       backgroundColor: Colors.red,
-                                            //     ),
-                                            //   );
-                                            // },
-                                            orElse: () {});
+                                        state.maybeWhen(orElse: () {});
                                       },
                                       builder: (context, state) {
                                         return state.maybeWhen(
                                           orElse: () {
                                             return ButtonOpsiAntrianWidget(
-                                              colors: AppColors.orange,
+                                              colors:
+                                                  (atr.statusAntrian == "Antri")
+                                                      ? AppColors.orange
+                                                      : AppColors.grey,
                                               keys: 'Panggil',
-                                              onPressed: () {
-                                                context
-                                                    .read<CallAntrianBloc>()
-                                                    .add(CallAntrianEvent
-                                                        .callAntrian(
-                                                            atr.id.toString()));
-                                              },
+                                              onPressed:
+                                                  (atr.statusAntrian == "Antri")
+                                                      ? () {
+                                                          context
+                                                              .read<
+                                                                  CallAntrianBloc>()
+                                                              .add(CallAntrianEvent
+                                                                  .callAntrian(atr
+                                                                      .id
+                                                                      .toString()));
+                                                        }
+                                                      : null,
                                             );
                                           },
                                           loading: () {
@@ -786,25 +776,174 @@ class _DashboardPageState extends State<DashboardPage> {
                                         );
                                       },
                                     ),
-                                    /* ButtonOpsiAntrianWidget(
-                                      colors: AppColors.orange,
-                                      keys: 'Panggil',
-                                      onPressed: () {},
-                                    ), */
-                                    ButtonOpsiAntrianWidget(
-                                      colors: AppColors.blue,
-                                      keys: 'Dilayani',
-                                      onPressed: () {},
+                                    BlocConsumer<UpdateStatusAntrianBloc,
+                                        UpdateStatusAntrianState>(
+                                      listener: (context, state) {
+                                        state.maybeWhen(
+                                            orElse: () {},
+                                            loadedDilayani: () {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Sukses Update Status Antrian ${atr.namaKaryawan}'),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                              getDataAntrian();
+                                            });
+                                      },
+                                      builder: (context, state) {
+                                        return state.maybeWhen(
+                                          orElse: () {
+                                            return ButtonOpsiAntrianWidget(
+                                              colors:
+                                                  (atr.statusAntrian == "Antri")
+                                                      ? AppColors.blue
+                                                      : AppColors.grey,
+                                              keys: 'Masuk',
+                                              onPressed: (atr.statusAntrian ==
+                                                      "Antri")
+                                                  ? () {
+                                                      context
+                                                          .read<
+                                                              UpdateStatusAntrianBloc>()
+                                                          .add(
+                                                            UpdateStatusAntrianEvent
+                                                                .updateAntrian(
+                                                              atr.id.toString(),
+                                                              nik!,
+                                                              'Masuk',
+                                                            ),
+                                                          );
+                                                    }
+                                                  : null,
+                                            );
+                                          },
+                                          loadingDilayani: () {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
-                                    ButtonOpsiAntrianWidget(
-                                      colors: AppColors.darkGreen,
-                                      keys: 'Selesai',
-                                      onPressed: () {},
+                                    BlocConsumer<UpdateStatusAntrianBloc,
+                                        UpdateStatusAntrianState>(
+                                      listener: (context, state) {
+                                        state.maybeWhen(
+                                            orElse: () {},
+                                            loadedSelesai: () {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      '${atr.namaKaryawan} Selesai '),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                              getDataAntrian();
+                                            });
+                                      },
+                                      builder: (context, state) {
+                                        return state.maybeWhen(
+                                          orElse: () {
+                                            return ButtonOpsiAntrianWidget(
+                                              colors:
+                                                  (atr.statusAntrian == "Masuk")
+                                                      ? AppColors.darkGreen
+                                                      : AppColors.grey,
+                                              keys: 'Selesai',
+                                              onPressed: (atr.statusAntrian ==
+                                                      "Masuk")
+                                                  ? () {
+                                                      context
+                                                          .read<
+                                                              UpdateStatusAntrianBloc>()
+                                                          .add(
+                                                            UpdateStatusAntrianEvent
+                                                                .updateAntrian(
+                                                              atr.id.toString(),
+                                                              nik!,
+                                                              'Selesai',
+                                                            ),
+                                                          );
+                                                    }
+                                                  : null,
+                                            );
+                                          },
+                                          loadingSelesai: () {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
+                                    BlocConsumer<UpdateStatusAntrianBloc,
+                                        UpdateStatusAntrianState>(
+                                      listener: (context, state) {
+                                        state.maybeWhen(
+                                            orElse: () {},
+                                            loadingCancel: () {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Antrian ${atr.namaKaryawan} Berhasil Dibatalkan '),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                              getDataAntrian();
+                                            });
+                                      },
+                                      builder: (context, state) {
+                                        return state.maybeWhen(
+                                          orElse: () {
+                                            return ButtonOpsiAntrianWidget(
+                                              colors:
+                                                  (atr.statusAntrian == "Antri" || atr.statusAntrian == "Batal")
+                                                      ? AppColors.red
+                                                      : AppColors.grey,
+                                              keys: 'Batal',
+                                              onPressed: (atr.statusAntrian ==
+                                                      "Antri")
+                                                  ? () {
+                                                      context
+                                                          .read<
+                                                              UpdateStatusAntrianBloc>()
+                                                          .add(
+                                                            UpdateStatusAntrianEvent
+                                                                .updateAntrianCancel(
+                                                              atr.id.toString(),
+                                                              nik!,
+                                                              'Batal',
+                                                            ),
+                                                          );
+                                                    }
+                                                  : null,
+                                            );
+                                          },
+                                          loadingCancel: () {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+
                                     ButtonOpsiAntrianWidget(
-                                      colors: AppColors.red,
-                                      keys: 'Batal',
-                                      onPressed: () {},
+                                      colors: (atr.statusAntrian == "Antri")
+                                          ? AppColors.purple
+                                          : AppColors.grey,
+                                      keys: 'SKIP',
+                                      onPressed: (atr.statusAntrian == "Antri")
+                                          ? () {}
+                                          : null,
                                     ),
                                   ],
                                 ),

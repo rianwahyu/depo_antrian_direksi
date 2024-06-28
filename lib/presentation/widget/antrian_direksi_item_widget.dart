@@ -57,7 +57,7 @@ class AntrianDireksiItem extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            width: 20,
+            width: 10,
           ),
           Expanded(
             child: Column(
@@ -66,9 +66,11 @@ class AntrianDireksiItem extends StatelessWidget {
                 Text(
                   nama,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.visible,
                   textScaler: const TextScaler.linear(
                     1.0,
                   ),
@@ -79,6 +81,8 @@ class AntrianDireksiItem extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   textScaler: const TextScaler.linear(
                     1.0,
                   ),
@@ -92,7 +96,7 @@ class AntrianDireksiItem extends StatelessWidget {
           Text(
             jam,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -100,12 +104,12 @@ class AntrianDireksiItem extends StatelessWidget {
             width: 30,
           ),
           SizedBox(
-            width: 80,
+            width: 100,
             child: TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: (status == "Antri")
                     ? Colors.amber
-                    : (status == "Dilayani")
+                    : (status == "Masuk")
                         ? Colors.blue
                         : (status == "Selesai")
                             ? Colors.green
@@ -115,7 +119,7 @@ class AntrianDireksiItem extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
               onPressed: null,
-              child: Text(
+              child: Text(                
                 status,
                 style: const TextStyle(
                   color: Colors.white,

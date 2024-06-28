@@ -15,6 +15,7 @@ import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/co
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/update_antrian/update_status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/pages/dashboard_page.dart';
 import 'package:depo_antrian_direksi/presentation/tes_home_page.dart';
 import 'package:depo_antrian_direksi/presentation/tes_message_page.dart';
@@ -165,6 +166,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CallAntrianBloc(AntrianDataSource()),
+        ),
+        BlocProvider(
+          create: (context) => UpdateStatusAntrianBloc(AntrianDataSource()),
         ),
       ],
       child: MaterialApp(
