@@ -14,4 +14,14 @@ class Nav {
       MaterialPageRoute(builder: (context) => page),
     );
   }
+
+  //create push remove until
+  static pushRemoveUntil(BuildContext context, Widget page) {
+    return Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => page),
+      (route) => false,
+    );
+  }
+  
 }

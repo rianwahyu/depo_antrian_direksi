@@ -14,6 +14,7 @@ import 'package:depo_antrian_direksi/presentation/dashboard/bloc/call_antrian/ca
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/counter_time_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/skip_antrian/skip_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/update_antrian/update_status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/pages/dashboard_page.dart';
@@ -97,7 +98,8 @@ Future<void> main() async {
 
   //Listen ForeGround Notifications
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
+    String payloadData = jsonEncode(message.data);
+    DMethod.log("Cek di Foreground $payloadData ");
   });
 
   // Listen to background notifications
@@ -169,6 +171,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => UpdateStatusAntrianBloc(AntrianDataSource()),
+        ),
+        BlocProvider(
+          create: (context) => SkipAntrianBloc(AntrianDataSource()),
         ),
       ],
       child: MaterialApp(

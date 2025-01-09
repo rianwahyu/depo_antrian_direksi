@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -35,11 +34,9 @@ class _LoginPageState extends State<LoginPage> {
     _requestPermission();
 
     _firebaseMessaging.getAPNSToken().then((String? token) {
-    print("APNS Token: $token");
-  });
+      print("APNS Token: $token");
+    });
   }
-
-  
 
   Future<void> _requestPermission() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
@@ -80,7 +77,8 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Notification Permission Denied'),
-        content: const Text('Please enable notifications in your browser settings.'),
+        content:
+            const Text('Please enable notifications in your browser settings.'),
         actions: [
           TextButton(
             onPressed: () {
@@ -229,14 +227,15 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: Colors.green,
                 ),
               );
-              /* Navigator.pushReplacement(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const DashboardPage(),
                 ),
-              ); */
+              );
 
-              Nav.replace(context, const DashboardPage());
+              // Nav.pushRemoveUntil(context, const DashboardPage());
+
             },
             error: (message) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -255,44 +254,48 @@ class _LoginPageState extends State<LoginPage> {
               child: CircularProgressIndicator(),
             );
           },
+          error: (message) {
+            return ButtonLogin(context);
+          },
           orElse: () {
-            return ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                side: const BorderSide(
-                  color: Colors.transparent,
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                alignment: Alignment.center,
-                fixedSize: const Size(double.infinity, 50),
-              ),
-              onPressed: () {
-                context.read<LoginBloc>().add(
-                      LoginEvent.login(
-                        nikEdt.text,
-                        tglLahirEdt.text,
-                      ),
-                    );
-                    //_requestPermission();
-                    //checkPushPermission();
-              },
-              child: const Text('Login'),
-            );
+            return ButtonLogin(context);
           },
         );
       },
+    );
+  }
+
+  ElevatedButton ButtonLogin(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size.fromHeight(50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        side: const BorderSide(
+          color: Colors.transparent,
+        ),
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        alignment: Alignment.center,
+        fixedSize: const Size(double.infinity, 50),
+      ),
+      onPressed: () {
+        context.read<LoginBloc>().add(
+              LoginEvent.login(
+                nikEdt.text,
+                tglLahirEdt.text,
+              ),
+            );
+      },
+      child: const Text('Login'),
     );
   }
 }

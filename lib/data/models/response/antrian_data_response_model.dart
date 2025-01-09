@@ -35,14 +35,14 @@ class AntrianDataResponseModel {
 }
 
 class AntrianDireksi {
-  final String? id;
+  final int? id;
   final String? nik;
   final String? namaKaryawan;
   final String? jabatan;
   final String? keperluan;
   final DateTime? tglAntrian;
   final String? waktuAntrian;
-  final String? noAntrian;
+  final int? noAntrian;
   final String? statusAntrian;
   final String? waktuMasuk;
   final String? waktuKeluar;

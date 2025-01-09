@@ -25,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -47,35 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCCIj_3SVGpc_Y5mprQ7w66lORpRD4kmAA',
-    appId: '1:309644002856:web:0c00df66620f62267d971d',
-    messagingSenderId: '309644002856',
-    projectId: 'depo-bangunan-ced0b',
-    authDomain: 'depo-bangunan-ced0b.firebaseapp.com',
-    databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
-    storageBucket: 'depo-bangunan-ced0b.appspot.com',
-    measurementId: 'G-GQ3LH4LY6D',
+    apiKey: 'AIzaSyABOcPmzlqj7jQvuWlh0NDFU-bCQaYIBEg',
+    appId: '1:781849167391:web:1a0aeab7133d5e3580b72a',
+    messagingSenderId: '781849167391',
+    projectId: 'antrian-direksi-ec0f3',
+    authDomain: 'antrian-direksi-ec0f3.firebaseapp.com',
+    storageBucket: 'antrian-direksi-ec0f3.firebasestorage.app',
+    measurementId: 'G-8Y5YDHZMH7',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDuyDoZgQyeeuxf7g5S1yfpkymfg_twlkQ',
-    appId: '1:309644002856:android:3c4d961e7addde647d971d',
-    messagingSenderId: '309644002856',
-    projectId: 'depo-bangunan-ced0b',
-    databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
-    storageBucket: 'depo-bangunan-ced0b.appspot.com',
+    apiKey: 'AIzaSyD9OSmu_UNB6LqXA73Eipd6_g1kji2iBlA',
+    appId: '1:781849167391:android:678a7c1379a8a31380b72a',
+    messagingSenderId: '781849167391',
+    projectId: 'antrian-direksi-ec0f3',
+    storageBucket: 'antrian-direksi-ec0f3.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBvREOgvCEtPAcHhZjvZOZkSAwZCmaQ3A4',
-    appId: '1:309644002856:ios:557b573e5b34c9107d971d',
-    messagingSenderId: '309644002856',
-    projectId: 'depo-bangunan-ced0b',
-    databaseURL: 'https://depo-bangunan-ced0b-default-rtdb.firebaseio.com',
-    storageBucket: 'depo-bangunan-ced0b.appspot.com',
-    androidClientId: '309644002856-jaise2rc6or4k7fu2ek4joqdhe85v48k.apps.googleusercontent.com',
-    iosClientId: '309644002856-16s7can193l21s7cd77uips4jui6473c.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA60_qkpuonbQGq-YqaqPLPnTItMxQOJxQ',
+    appId: '1:781849167391:ios:a369f3205531626e80b72a',
+    messagingSenderId: '781849167391',
+    projectId: 'antrian-direksi-ec0f3',
+    storageBucket: 'antrian-direksi-ec0f3.firebasestorage.app',
+    iosBundleId: 'com.depo.apps.antriandireksi',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyA60_qkpuonbQGq-YqaqPLPnTItMxQOJxQ',
+    appId: '1:781849167391:ios:c2740237c10be49180b72a',
+    messagingSenderId: '781849167391',
+    projectId: 'antrian-direksi-ec0f3',
+    storageBucket: 'antrian-direksi-ec0f3.firebasestorage.app',
     iosBundleId: 'com.depo.apps.depoAntrianDireksi',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyABOcPmzlqj7jQvuWlh0NDFU-bCQaYIBEg',
+    appId: '1:781849167391:web:80f1e2511dd93b1080b72a',
+    messagingSenderId: '781849167391',
+    projectId: 'antrian-direksi-ec0f3',
+    authDomain: 'antrian-direksi-ec0f3.firebaseapp.com',
+    storageBucket: 'antrian-direksi-ec0f3.firebasestorage.app',
+    measurementId: 'G-1SYNK8J5Y7',
   );
 
 }

@@ -17,6 +17,7 @@ import 'package:depo_antrian_direksi/presentation/dashboard/bloc/call_antrian/ca
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/counter_time/counter_time_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/create_antrian/create_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/data_antrian/data_antrian_bloc.dart';
+import 'package:depo_antrian_direksi/presentation/dashboard/bloc/skip_antrian/skip_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/status_antrian/status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/dashboard/bloc/update_antrian/update_status_antrian_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/widget/antrian_direksi_item_widget.dart';
@@ -343,7 +344,24 @@ class _DashboardPageState extends State<DashboardPage> {
                 Navigator.of(context).pop();
               },
             ),
-            BlocListener<LogoutBloc, LogoutState>(
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.green),
+              ),
+              child: const Text(
+                'Simpan',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () async {
+                // context.read<LogoutBloc>().add(const LogoutEvent.logout());
+
+                await AuthLocalDataSource().removeAuthData();
+                await AuthLocalDataSource().removeTokenData();
+
+                Nav.pushRemoveUntil(context, LoginPage());
+              },
+            ),
+            /* BlocListener<LogoutBloc, LogoutState>(
               listener: (context, state) {
                 state.maybeWhen(
                     success: () {
@@ -377,7 +395,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   context.read<LogoutBloc>().add(const LogoutEvent.logout());
                 },
               ),
-            ),
+            ), */
           ],
         );
       },
@@ -462,11 +480,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   if (snapshot.hasData &&
                                       snapshot.data!.user!.jabatan!
                                           .contains('SEKRETARIAT')) {
-                                    return AdminSekreatriat(context, antrian);
+                                    return AdminSekreatriat(
+                                        context, antrian, snapshot);
                                   } else
-                                    return DataAntrianUserOnly(antrian);
+                                    return DataAntrianUserOnly(
+                                        antrian, snapshot);
                                 },
                               );
+                            }, error: (message) {
+                              return notFoundAntrian();
                             });
                           },
                         ),
@@ -613,7 +635,8 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Container DataAntrianUserOnly(List<AntrianDireksi> antrian) {
+  Container DataAntrianUserOnly(List<AntrianDireksi> antrian,
+      AsyncSnapshot<AuthResponseModel?> snapshot) {
     return Container(
       child: ListView.builder(
         padding: const EdgeInsets.only(top: 8),
@@ -625,17 +648,29 @@ class _DashboardPageState extends State<DashboardPage> {
           return AntrianDireksiItem(
             nama: item.namaKaryawan!,
             jabatan: item.jabatan!,
-            noAntrian: item.noAntrian!,
+            noAntrian: item.noAntrian.toString(),
             status: item.statusAntrian!,
             jam: item.waktuAntrian!,
+            keperluan: item.keperluan!,
+            snapshot: snapshot,
+            onPressedPanggil: () {
+              context
+                  .read<CallAntrianBloc>()
+                  .add(CallAntrianEvent.callAntrian(item.id.toString()));
+            },
+            onPressedSkip: () {
+              context
+                  .read<SkipAntrianBloc>()
+                  .add(SkipAntrianEvent.skipAntrian(item.id.toString()));
+            },
           );
         },
       ),
     );
   }
 
-  Container AdminSekreatriat(
-      BuildContext context, List<AntrianDireksi> antrian) {
+  Container AdminSekreatriat(BuildContext context, List<AntrianDireksi> antrian,
+      AsyncSnapshot<AuthResponseModel?> snapshot) {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
       margin: EdgeInsets.only(left: 10, right: 10, top: 16),
@@ -710,7 +745,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      atr.noAntrian ?? '0',
+                                      atr.noAntrian.toString() ?? '0',
                                       style: const TextStyle(
                                           fontSize: 20, color: Colors.white),
                                       textAlign: TextAlign.center,
@@ -745,26 +780,31 @@ class _DashboardPageState extends State<DashboardPage> {
                                         state.maybeWhen(orElse: () {});
                                       },
                                       builder: (context, state) {
+                                        // print(atr.statusAntrian);
                                         return state.maybeWhen(
                                           orElse: () {
                                             return ButtonOpsiAntrianWidget(
-                                              colors:
-                                                  (atr.statusAntrian == "Antri")
-                                                      ? AppColors.orange
-                                                      : AppColors.grey,
+                                              colors: (atr.statusAntrian ==
+                                                          "Antri" ||
+                                                      atr.statusAntrian ==
+                                                          "Skip")
+                                                  ? AppColors.orange
+                                                  : AppColors.grey,
                                               keys: 'Panggil',
-                                              onPressed:
-                                                  (atr.statusAntrian == "Antri")
-                                                      ? () {
-                                                          context
-                                                              .read<
-                                                                  CallAntrianBloc>()
-                                                              .add(CallAntrianEvent
-                                                                  .callAntrian(atr
-                                                                      .id
-                                                                      .toString()));
-                                                        }
-                                                      : null,
+                                              onPressed: (atr.statusAntrian ==
+                                                          "Antri" ||
+                                                      atr.statusAntrian ==
+                                                          "Skip")
+                                                  ? () {
+                                                      context
+                                                          .read<
+                                                              CallAntrianBloc>()
+                                                          .add(CallAntrianEvent
+                                                              .callAntrian(atr
+                                                                  .id
+                                                                  .toString()));
+                                                    }
+                                                  : null,
                                             );
                                           },
                                           loading: () {
@@ -797,13 +837,17 @@ class _DashboardPageState extends State<DashboardPage> {
                                         return state.maybeWhen(
                                           orElse: () {
                                             return ButtonOpsiAntrianWidget(
-                                              colors:
-                                                  (atr.statusAntrian == "Antri")
-                                                      ? AppColors.blue
-                                                      : AppColors.grey,
+                                              colors: (atr.statusAntrian ==
+                                                          "Antri" ||
+                                                      atr.statusAntrian ==
+                                                          "Skip")
+                                                  ? AppColors.blue
+                                                  : AppColors.grey,
                                               keys: 'Masuk',
                                               onPressed: (atr.statusAntrian ==
-                                                      "Antri")
+                                                          "Antri" ||
+                                                      atr.statusAntrian ==
+                                                          "Skip")
                                                   ? () {
                                                       context
                                                           .read<
@@ -903,10 +947,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                         return state.maybeWhen(
                                           orElse: () {
                                             return ButtonOpsiAntrianWidget(
-                                              colors:
-                                                  (atr.statusAntrian == "Antri" || atr.statusAntrian == "Batal")
-                                                      ? AppColors.red
-                                                      : AppColors.grey,
+                                              colors: (atr.statusAntrian ==
+                                                          "Antri" ||
+                                                      atr.statusAntrian ==
+                                                          "Batal")
+                                                  ? AppColors.red
+                                                  : AppColors.grey,
                                               keys: 'Batal',
                                               onPressed: (atr.statusAntrian ==
                                                       "Antri")
@@ -935,15 +981,55 @@ class _DashboardPageState extends State<DashboardPage> {
                                         );
                                       },
                                     ),
-
-                                    ButtonOpsiAntrianWidget(
-                                      colors: (atr.statusAntrian == "Antri")
-                                          ? AppColors.purple
-                                          : AppColors.grey,
-                                      keys: 'SKIP',
-                                      onPressed: (atr.statusAntrian == "Antri")
-                                          ? () {}
-                                          : null,
+                                    BlocConsumer<SkipAntrianBloc,
+                                        SkipAntrianState>(
+                                      listener: (context, state) {
+                                        state.maybeWhen(
+                                          orElse: () {},
+                                          loaded: () {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Antrian ${atr.namaKaryawan} Berhasil Skip'),
+                                                backgroundColor: Colors.green,
+                                              ),
+                                            );
+                                            getDataAntrian();
+                                          },
+                                        );
+                                      },
+                                      builder: (context, state) {
+                                        return state.maybeWhen(orElse: () {
+                                          return ButtonOpsiAntrianWidget(
+                                            colors: AppColors.grey,
+                                            keys: 'Skip',
+                                            onPressed: () {
+                                              context
+                                                  .read<SkipAntrianBloc>()
+                                                  .add(SkipAntrianEvent
+                                                      .skipAntrian(
+                                                          atr.id.toString()));
+                                            },
+                                          );
+                                        }, error: () {
+                                          return ButtonOpsiAntrianWidget(
+                                            colors: AppColors.grey,
+                                            keys: 'Skip',
+                                            onPressed: () {
+                                              context
+                                                  .read<SkipAntrianBloc>()
+                                                  .add(SkipAntrianEvent
+                                                      .skipAntrian(
+                                                          atr.id.toString()));
+                                            },
+                                          );
+                                        }, loading: () {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        });
+                                      },
                                     ),
                                   ],
                                 ),
@@ -983,7 +1069,7 @@ class _DashboardPageState extends State<DashboardPage> {
               );
             }
             if (snapshot.hasData &&
-                snapshot.data!.user!.jabatan!.contains('SEKRETARIAT')) {
+                snapshot.data!.user!.jabatan!.contains('SEKRETARIAT') || snapshot.data!.user!.jabatan!.contains('DIREKTUR') ) {
               return _statusAntrianContainer(context);
             } else {
               return const SizedBox();
@@ -1194,7 +1280,8 @@ class _DashboardPageState extends State<DashboardPage> {
           );
         }
         if (snapshot.hasData &&
-            snapshot.data!.user!.jabatan!.contains('SEKRETARIAT')) {
+            (snapshot.data!.user!.jabatan!.contains('SEKRETARIAT') ||
+                snapshot.data!.user!.jabatan!.contains('DIREKTUR'))) {
           return SizedBox();
         } else
           return BlocBuilder<StatusAntrianBloc, StatusAntrianState>(
@@ -1206,26 +1293,27 @@ class _DashboardPageState extends State<DashboardPage> {
                     splashColor: Colors.transparent,
                     onTap: null,
                     child: Container(
-                        padding: const EdgeInsets.only(bottom: 15, top: 10),
-                        decoration: const BoxDecoration(
-                          color: Colors.grey,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, -1),
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: const Text(
-                          'Ambil Antrian Tidak Tersedia',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                      padding: const EdgeInsets.only(bottom: 15, top: 10),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, -1),
+                            blurRadius: 10,
                           ),
-                          textAlign: TextAlign.center,
-                        )),
+                        ],
+                      ),
+                      child: const Text(
+                        'Ambil Antrian Tidak Tersedia',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   );
                 },
                 switchToggled: (isSwitched) {
@@ -1238,26 +1326,27 @@ class _DashboardPageState extends State<DashboardPage> {
                       _showDialog(context);
                     },
                     child: Container(
-                        padding: const EdgeInsets.only(bottom: 15, top: 10),
-                        decoration: const BoxDecoration(
-                          color: Colors.blueAccent,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, -1),
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: const Text(
-                          'Ambil Antrian',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
+                      padding: const EdgeInsets.only(bottom: 15, top: 10),
+                      decoration: const BoxDecoration(
+                        color: Colors.blueAccent,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, -1),
+                            blurRadius: 10,
                           ),
-                          textAlign: TextAlign.center,
-                        )),
+                        ],
+                      ),
+                      child: const Text(
+                        'Ambil Antrian',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   );
                 },
               );

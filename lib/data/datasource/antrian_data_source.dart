@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:d_method/d_method.dart';
 import 'package:dartz/dartz.dart';
 import 'package:depo_antrian_direksi/config/app_constant.dart';
+import 'package:depo_antrian_direksi/config/app_format.dart';
 import 'package:depo_antrian_direksi/data/datasource/auth_local_datasource.dart';
 import 'package:depo_antrian_direksi/data/models/response/antrian_data_response_model.dart';
 
@@ -24,12 +25,12 @@ class AntrianDataSource {
     // Encode the data to JSON
     String jsonBody = json.encode(data);
 
-    final url = Uri.parse('${AppConstant.baseUrl}/antrian_create');
+    final url = Uri.parse('${AppConstant.baseUrl}/createAntrian');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
       body: jsonBody,
     );
 
@@ -86,20 +87,22 @@ class AntrianDataSource {
 
     Map<String, dynamic> data = {
       'changeBy': changeBy,
+      'tglAntrian': AppFormat.getCurrentDate() ?? '',
       'statusAntrian': (isSwitched ? 'AKTIF' : 'OFF'),
     };
 
     // Encode the data to JSON
     String jsonBody = json.encode(data);
 
-    final url = Uri.parse('${AppConstant.baseUrl}/antrian_state_update');
+    final url = Uri.parse('${AppConstant.baseUrl}/updateStateAntrian');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
       body: jsonBody,
     );
+     DMethod.log(response.body);
      
     if (response.statusCode == 201) {
       final responseBody = json.decode(response.body); // Decode JSON
@@ -125,12 +128,12 @@ class AntrianDataSource {
     // Encode the data to JSON
     String jsonBody = json.encode(data);
 
-    final url = Uri.parse('${AppConstant.baseUrl}/call_antrian');
+    final url = Uri.parse('${AppConstant.baseUrl}/callntrianById');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
       body: jsonBody,
     );
      
@@ -160,12 +163,44 @@ class AntrianDataSource {
     // Encode the data to JSON
     String jsonBody = json.encode(data);
 
-    final url = Uri.parse('${AppConstant.baseUrl}/antrian_update_status');
+    final url = Uri.parse('${AppConstant.baseUrl}/updateStatusAntrianById');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
+      body: jsonBody,
+    );
+     
+    if (response.statusCode == 201) {
+      final responseBody = json.decode(response.body); // Decode JSON
+      final message = responseBody['message']; // Ambil nilai 'message'
+
+      return Right(message); // Return 'message' jika status 201
+    } else {
+      return const Left('Off'); // Return 'message' jika status bukan 201
+    }
+  }
+
+  Future<Either<String, String>> skipAntrian(  
+    String id,
+    
+  ) async {
+    await AuthLocalDataSource().getAuthData();
+
+    Map<String, dynamic> data = {
+      'id': id,      
+    };
+
+    // Encode the data to JSON
+    String jsonBody = json.encode(data);
+
+    final url = Uri.parse('${AppConstant.baseUrl}/skipAntrianById');
+    final response = await http.post(
+      url,
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
       body: jsonBody,
     );
      
