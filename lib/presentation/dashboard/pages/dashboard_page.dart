@@ -10,6 +10,7 @@ import 'package:depo_antrian_direksi/config/nav.dart';
 import 'package:depo_antrian_direksi/data/datasource/auth_local_datasource.dart';
 import 'package:depo_antrian_direksi/data/models/response/antrian_data_response_model.dart';
 import 'package:depo_antrian_direksi/data/models/response/auth_response_model.dart';
+import 'package:depo_antrian_direksi/presentation/auth/bloc/bloc/delete_token_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
@@ -344,7 +345,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 Navigator.of(context).pop();
               },
             ),
-            TextButton(
+            /* TextButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(Colors.green),
               ),
@@ -360,18 +361,21 @@ class _DashboardPageState extends State<DashboardPage> {
 
                 Nav.pushRemoveUntil(context, LoginPage());
               },
-            ),
-            /* BlocListener<LogoutBloc, LogoutState>(
+            ), */
+            BlocListener<DeleteTokenBloc, DeleteTokenState>(
               listener: (context, state) {
                 state.maybeWhen(
-                    success: () {
+                    success: (message) async {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Logout successful'),
                           backgroundColor: Colors.green,
                         ),
                       );
-                      Nav.replace(context, const LoginPage());
+                      await AuthLocalDataSource().removeAuthData();
+                      await AuthLocalDataSource().removeTokenData();
+
+                      Nav.pushRemoveUntil(context, LoginPage());
                     },
                     error: (message) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -392,10 +396,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  context.read<LogoutBloc>().add(const LogoutEvent.logout());
+                  context.read<DeleteTokenBloc>().add(const DeleteTokenEvent.deleteToken());
                 },
               ),
-            ), */
+            ),
           ],
         );
       },
@@ -1069,7 +1073,8 @@ class _DashboardPageState extends State<DashboardPage> {
               );
             }
             if (snapshot.hasData &&
-                snapshot.data!.user!.jabatan!.contains('SEKRETARIAT') || snapshot.data!.user!.jabatan!.contains('DIREKTUR') ) {
+                    snapshot.data!.user!.jabatan!.contains('SEKRETARIAT') ||
+                snapshot.data!.user!.jabatan!.contains('DIREKTUR')) {
               return _statusAntrianContainer(context);
             } else {
               return const SizedBox();

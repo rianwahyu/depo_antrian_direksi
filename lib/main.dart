@@ -7,6 +7,7 @@ import 'package:depo_antrian_direksi/data/datasource/antrian_data_source.dart';
 import 'package:depo_antrian_direksi/data/datasource/auth_local_datasource.dart';
 import 'package:depo_antrian_direksi/data/datasource/auth_remote_data_source.dart';
 import 'package:depo_antrian_direksi/firebase_options.dart';
+import 'package:depo_antrian_direksi/presentation/auth/bloc/bloc/delete_token_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:depo_antrian_direksi/presentation/auth/pages/login_page.dart';
@@ -174,6 +175,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SkipAntrianBloc(AntrianDataSource()),
+        ),
+        BlocProvider(
+          create: (context) => DeleteTokenBloc(AuthRemoteDataSource()),
         ),
       ],
       child: MaterialApp(

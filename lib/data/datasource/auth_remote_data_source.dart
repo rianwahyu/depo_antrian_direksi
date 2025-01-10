@@ -43,7 +43,6 @@ class AuthRemoteDataSource {
       await AuthLocalDataSource().saveTokenData(fcmToken!);
 
       saveToken(nik, fcmToken);
-      
 
       return Right(AuthResponseModel.fromJson(response.body));
     } else {
@@ -78,7 +77,35 @@ class AuthRemoteDataSource {
       DMethod.log(response.body);
     }
   }
-  
+
+  Future<Either<String, String>> deleteTokenByNik() async {
+    final authData = await AuthLocalDataSource().getAuthData();
+
+    String nik = authData!.user!.nik!;
+
+    Map<String, dynamic> data = {
+      'nik': nik,
+    };
+
+    // Encode the data to JSON
+    String jsonBody = json.encode(data);
+
+    final url = Uri.parse('${AppConstant.baseUrl}/deleteTokenByNik');
+    final response = await http.post(
+      url,
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
+      body: jsonBody,
+    );
+
+    if (response.statusCode == 201) {
+      return Right(response.body);
+    } else {
+      return Left(response.body);
+    }
+  }
+
   Future<Either<String, String>> logout() async {
     final url = Uri.parse('${AppConstant.baseUrl}/logout');
     // ignore: unused_local_variable
